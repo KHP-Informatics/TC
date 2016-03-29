@@ -40,6 +40,8 @@ From AIBL download
 
 aibl_ptdemog_28-Apr-2015.csv
 aibl_mmse_28-Apr-2015.csv
+aibl_pdxconv_28-Apr-2015.csv
+aibl_apoeres_28-Apr-2015.csv
 
 
 1a(ii) CAMD
