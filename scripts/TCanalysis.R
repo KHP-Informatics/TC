@@ -125,7 +125,7 @@ dev.off()
 
 pdf("paquid.pdf",width=5,height=5)
 par(mar=c(4,4,0.5,0.5))
-mmse_paq@clusters <- paq_res[[1]]
+mmse_paq@clusters <- 1 - paq_res[[1]]
 plot.multiTS(mmse_paq,yl=c(-4,30),xlabel = "Years since first visit",ylabel="MMSE",days2years=T)
 legend("bottomleft",c("PAQUID k=1","PAQUID k=2"),lty=1,lwd=5,col=1:2)
 dev.off()
