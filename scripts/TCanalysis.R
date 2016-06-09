@@ -90,7 +90,7 @@ save(aac_res,file="orig_k2.RData")
 
 pdf("aac.pdf",width=5,height=5)
 par(mar=c(4,4,0.5,0.5))
-mmse_aac@clusters <- aac_res[[1]]
+mmse_aac@clusters <- 3 - aac_res[[1]]
 plot.multiTS(mmse_aac,yl=c(0,30),xlabel = "Years since first visit",ylabel="MMSE",days2years=T)
 legend("bottomright",c("AAC k=1","AAC k=2"),lty=1,lwd=5,col=1:2)
 dev.off()
@@ -99,8 +99,8 @@ dev.off()
 pdf("aac_k2.pdf",width=5,height=5)
 par(mar=c(4,4,0.5,1.5))
 plot.multiTS(mmse_aac,yl=c(0,30),xl=c(-1000,19200),shift = aac_res[[3]],xlabel = "Estimated disease time in years",ylabel="MMSE",recolor = T,days2years=T)
-points((-1000:19500)/365.25,exp_drop2(-1000:19500,aac_res[[2]][[1]]),col="black")
-points((-1000:4250)/365.25,exp_drop2(-1000:4250,aac_res[[2]][[2]]),col="red")
+points((-1000:19500)/365.25,exp_drop2(-1000:19500,aac_res[[2]][[2]]),col="black")
+points((-1000:4250)/365.25,exp_drop2(-1000:4250,aac_res[[2]][[1]]),col="red")
 
 legend("topright",c("AAC k=1","AAC k=2"),lty=1,lwd=10,col=1:2)
 
