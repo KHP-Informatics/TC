@@ -1,4 +1,4 @@
-mmseTS <- vector("list",5)
+mmseTS <- vector("list",4)
 
 camdTS <- mmse_both_cpath
 
@@ -6,17 +6,17 @@ mmseTS[[1]] <- mmse_aac
 mmseTS[[2]] <- mmseADNIts
 mmseTS[[3]] <- mmseAIBLts
 mmseTS[[4]] <- mmse_both_cpath
-mmseTS[[5]] <- mmse_paq
 
-mmse_demog <- data.frame(combined=NA,adni=NA,aibl=NA,camd=NA,paquid=NA)
+
+mmse_demog <- data.frame(combined=NA,adni=NA,aibl=NA,camd=NA)
 
 rownames(mmse_demog) <- "Num ind any data"
 
-mmse_demog["Num ind any data",2:5] <- c(1229,861,5358,500)
+mmse_demog["Num ind any data",2:4] <- c(1229,861,5358)
 
 mmse_demog["Num ind any data","combined"] <- sum(mmse_demog["Num ind any data",2:4],na.rm=T)
 
-for (i in 1:5){
+for (i in 1:4){
   
   mmse_demog["Num ind > 1 TP",i] <- mmseTS[[i]]@numTS
 
@@ -263,30 +263,6 @@ mmse_demog["LQ bl age","combined"] <- as.numeric(quantile(comb_age,0.25))
 mmse_demog["UQ bl age","combined"] <- as.numeric(quantile(comb_age,0.75))
 
 
-
-# PAQUID
-
-mmse_paq <- multiTS.matrix(mmse_paq)
-
-paq_bl_nc <- which(mmse_paq@mat_data[,1]>23)
-paq_bl_mci <- which((mmse_paq@mat_data[,1]<24)&(mmse_paq@mat_data[,1]>17))
-paq_bl_sci <- which(mmse_paq@mat_data[,1]<18)
-
-paq_bl_diag <- mat.or.vec(421,1)
-paq_bl_diag[paq_bl_nc] <- 1
-paq_bl_diag[paq_bl_mci] <- 2
-paq_bl_diag[paq_bl_sci] <- 3
-
-mmse_demog[c("Num CTL","Num MCI"),"paquid"] <- table(paq_bl_diag)
-
-mmse_demog[c("Num Male","Num Female"),"paquid"] <- table(paq_gender)
-
-mmse_demog["Median bl age","paquid"] <- round(median(paq_age))
-
-mmse_demog["LQ bl age","paquid"] <- round(as.numeric(quantile(paq_age,0.25)))
-
-mmse_demog["UQ bl age","paquid"] <- round(as.numeric(quantile(paq_age,0.75)))
-
 setwd("../..")
 
 setwd("results/")
@@ -296,34 +272,6 @@ write.csv(mmse_demog[-1,],file="mmse_demog.csv")
 bl_diags <- c(camd_diag,adni_bl_diag,aibl_bl_diag)
 lv_diags <- c(camd_lv_diag,adni_lv_diag,aibl_lv_diag)
 
-paquidTS <- mmse_paq
-
-#table(bl_diags,lv_diags)
-
-num_tp <- c()
-last_tp <- c()
-last_mmse <- c()
-
-for (i in 1:421){
-
-  num_tp[i] <- length(paquidTS@tps[[i]])
-  
-  last_mmse[i] <- paquidTS@data[[i]][num_tp[i]]
-  
-  last_tp[i] <- paquidTS@tps[[i]][num_tp[i]]
-  
-}
-
-paq_lv_nc <- which(last_mmse>23)
-paq_lv_mci <- which((last_mmse<24)&(last_mmse>17))
-paq_lv_sci <- which(last_mmse<18)
-
-paq_lv_diag <- mat.or.vec(421,1)
-paq_lv_diag[paq_lv_nc] <- 1
-paq_lv_diag[paq_lv_mci] <- 2
-paq_lv_diag[paq_lv_sci] <- 3
-
-#table(paq_bl_diag,paq_lv_diag)
 
 print("Table 1 (demographics) stored in results/")
 

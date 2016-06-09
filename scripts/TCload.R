@@ -351,64 +351,13 @@ mmse_aac <- mergeMultiTS(mmse_cpath_adni,mmseAIBLts)
 
 print("merged AAC")
 
-# load PAQUID
-install.packages("lcmm")
-library(lcmm)
-data(paquid)
-
-unqs <- unique(paquid[,"ID"])
-
-tps <- list()
-data <- list()
-
-final_people <- c()
-
-k <- 1
-
-# store demographic data
-paq_age <- c()
-paq_gender <- c()
-
-for (i in 1:length(unqs)){
-
-  ind <- which(paquid[,"ID"]==unqs[i])
-  
-  # remove individuals with only one timepoint
-  if (length(ind) > 1){
-  
-    nas <- is.na(paquid[ind,"MMSE"])
-    
-    # remove individuals with only one non-missing timepoint
-    if (length(which(!nas)) > 1){
-    
-      paq_age[k] <- paquid[ind[!nas][1],"age"]
-      paq_gender[k] <- paquid[ind[!nas][1],"male"]
-      
-      data[[k]] <- paquid[ind[!nas],"MMSE"]
-      tps[[k]] <- round((paquid[ind[!nas],"age"]-paquid[ind[!nas][1],"age"])*365.25)
-  
-      final_people[k] <- unqs[i]
-    
-      k <- k + 1
-      
-    }
-    
-  }
-
-}
-
-# create multiTS object for PAQUID MMSE
-mmse_paq <- new("multiTS", numTS = k-1 , tps = tps , data = data, clusters = rep(1,length(tps)), subj_id = final_people , cohort = "paquid")
-
-print("loaded PAQUID")
 
 # add matrix format data
 mmse_aac <- multiTS.matrix(mmse_aac)
-mmse_paq <- multiTS.matrix(mmse_paq)
 
 setwd("..")
 
 # save loaded data
-save(mmse_aac,mmse_paq,file="mmse.RData")
+save(mmse_aac,file="mmse.RData")
 
 setwd("../scripts/")
