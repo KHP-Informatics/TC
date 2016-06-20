@@ -73,7 +73,7 @@ p + geom_boxplot(aes(fill = factor(fix))) +
   geom_segment(aes(x=6.5, xend=6.5, y=0.00015, yend=0.0012), linetype=2)+ 
   geom_segment(aes(x=8.5, xend=8.5, y=0.00015, yend=0.0012), linetype=2)+ 
   xlab("Simulations (Cluster)") + ylab("Theta 2") +
-    scale_fill_discrete(name="Sim type & method",labels=c("standard", "fixed baseline"))
+    scale_fill_discrete(name="Sim type & method",labels=c("seperate baseline", "fixed baseline")) + theme_bw()
 
 ggsave("simk2_supp_theta2.pdf",width=7,height=2.8)
 
@@ -86,7 +86,7 @@ p + geom_boxplot(aes(fill = factor(fix))) +
   geom_segment(aes(x=6.5, xend=6.5, y=28, yend=45), linetype=2)+ 
   geom_segment(aes(x=8.5, xend=8.5, y=28, yend=45), linetype=2)+ 
   xlab("Simulations (Cluster)") + ylab("Theta 1") +
-  scale_fill_discrete(name="Sim type & method",labels=c("separate baseline", "fixed baseline"))
+  scale_fill_discrete(name="Sim type & method",labels=c("separate baseline", "fixed baseline")) + theme_bw()
 
 ggsave("simk2_supp_theta1.pdf",width=7,height=2.8)
 
@@ -157,7 +157,21 @@ median(rand_df[rand_df[,"thres"]==2,"adjRand"],na.rm=T)
 median(rand_df[rand_df[,"thres"]==5,"adjRand"],na.rm=T)
 median(rand_df[rand_df[,"thres"]==10,"adjRand"],na.rm=T)
 
-median(rand_df[rand_df[,"thres"]==0,"num_left"],na.rm=T)
-median(rand_df[rand_df[,"thres"]==2,"num_left"],na.rm=T)
-median(rand_df[rand_df[,"thres"]==5,"num_left"],na.rm=T)
-median(rand_df[rand_df[,"thres"]==10,"num_left"],na.rm=T)
+median(rand_df[rand_df[,"thres"]==0,"num_left"],na.rm=T)/2412
+median(rand_df[rand_df[,"thres"]==2,"num_left"],na.rm=T)/2412
+median(rand_df[rand_df[,"thres"]==5,"num_left"],na.rm=T)/2412
+median(rand_df[rand_df[,"thres"]==10,"num_left"],na.rm=T)/2412
+
+
+# What are the characteristics of simulated individuals filtered out? (discrimination score 2)
+
+  
+
+# do they have fewer TPs? YES
+ggplot(filter_df,aes(num_tp,colour = FilteredOut,fill=FilteredOut)) + geom_histogram(binwidth=1) + theme_bw()
+ggsave("filter_tps.pdf",width=7,height=2.8)
+
+# do they have lower MMSE at first visit? YES
+ggplot(filter_df,aes(mmse_at_first_visit,colour = FilteredOut,fill=FilteredOut)) + geom_histogram(binwidth=1) + theme_bw()
+ggsave("filter_mmse.pdf",width=7,height=2.8)
+

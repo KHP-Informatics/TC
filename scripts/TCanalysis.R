@@ -28,6 +28,12 @@ setwd("../scripts/")
 # Figure 2 and Supplementary Figures 3 & 4
 source("simK2summary.R") # needs scripts and data from cluster to complete
 
+cohort_df <- data.frame(cohort=factor(mmse_aac@cohort),mmse_at_first_visit=mmse_aac@mat_data[,1])
+
+library(ggplot2)
+
+ggplot(cohort_df,aes(mmse_at_first_visit,colour = cohort)) + geom_freqpoly(binwidth=1) + theme_bw()
+ggsave("mmse_cohort.pdf",width=7,height=2.8)
 
 # fit sigmoids and exponential decline models to AAC
 #
@@ -41,6 +47,7 @@ aac_exp$value # Loss of exponential decline AAC model
 aac_exp$par # Parameters of exponential decline AAC model
 
 save(aac_logistic,aac_exp,file="align.RData")
+
 
 #load("align.RData")
 
@@ -65,7 +72,7 @@ points(0:8400,exp_drop2(0:8400,aac_exp$par))
 dev.off()
 
 
-# Perform Temporal Clustering on AAC 
+# Perform Temporal Clustering on AAC
 #
 
 aac_res <- temporalClustering(mmse_aac@mat_data,mmse_aac@mat_tps,K=2,fix_first=T)
@@ -81,14 +88,12 @@ save(aac_res,file="orig_k2.RData")
 #load("orig_k2.RData")
 
 
-
-
-
-
+# Generate Figure 2
+#
 # Generate Figure 2
 #
 
-pdf("aac.pdf",width=5,height=5)
+pdf("aac.pdf",width=4,height=4)
 par(mar=c(4,4,0.5,0.5))
 mmse_aac@clusters <- 3 - aac_res[[1]]
 plot.multiTS(mmse_aac,yl=c(0,30),xlabel = "Years since first visit",ylabel="MMSE",days2years=T)
@@ -96,7 +101,7 @@ legend("bottomright",c("AAC k=1","AAC k=2"),lty=1,lwd=5,col=1:2)
 dev.off()
 
 
-pdf("aac_k2.pdf",width=5,height=5)
+pdf("aac_k2.pdf",width=4,height=4)
 par(mar=c(4,4,0.5,1.5))
 plot.multiTS(mmse_aac,yl=c(0,30),xl=c(-1000,19200),shift = aac_res[[3]],xlabel = "Estimated disease time in years",ylabel="MMSE",recolor = T,days2years=T)
 points((-1000:19500)/365.25,exp_drop2(-1000:19500,aac_res[[2]][[2]]),col="black")
@@ -168,6 +173,11 @@ setwd("../../results/")
 aac_discrim <- discrimScore(mmse_aac@mat_data,mmse_aac@mat_tps,aac_res,c(-50000,50000))
 discrim2 <- aac_discrim>2
 
+cohort_df[,"FilteredOut"] <- !discrim2
+
+ggplot(cohort_df,aes(mmse_at_first_visit,colour = FilteredOut,fill=FilteredOut)) + geom_histogram(binwidth=1) + theme_bw()
+ggsave("mmse_first_visit.pdf",width=4,height=4)
+
 
 #  regression data
 aac_demog <- data.frame(bl_diag=bl_diags,lv_diag=lv_diags,apoe=factor(all_apoe),tau=all_tau,
@@ -212,3 +222,4 @@ table(aac_res[[1]][adni_aibl],lv_diags[adni_aibl])
 
 adni_aibl_2 <- (adni_aibl & discrim2)
 table(aac_res[[1]][adni_aibl_2],lv_diags[adni_aibl_2])
+

@@ -6,7 +6,7 @@
 #$ -cwd
 #$ -l h_vmem=2G
 #$ -V
-#$ -t 1-50
+#$ -t 1-100
 
 Rscript simulate_fix_aac.R 3
 

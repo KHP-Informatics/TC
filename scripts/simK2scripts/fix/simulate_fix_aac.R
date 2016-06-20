@@ -8,7 +8,7 @@ iter=as.numeric(system("echo $SGE_TASK_ID",intern=T))
 
 setClass("multiTS", representation(numTS = "numeric", tps = "list", data = "list",mat_tps = "matrix",mat_data = "matrix" , mat_data_2 = "matrix", mat_data_3 = "matrix", clusters = "numeric" , shifts = "numeric" , dilations = "numeric",subj_id = "vector",cohort = "character"))
 
-setClass("TCsimRes", slots = c(params = "vector",shifts = "data.frame",clusters = "data.frame",loss="data.frame"))
+setClass("TCsimRes", slots = c(params = "vector",shifts = "data.frame",clusters = "data.frame",loss="data.frame",sim_data="matrix",sim_tps="matrix"))
 
 loss_traj_arg <- function(traj_args,data,tps,lambda,traj_fun,traj_range){
   
@@ -590,7 +590,7 @@ range <- 3
   # rounded, ceiling
   tmp <-  temporalClustering(sim@mat_data,sim@mat_tps,K=2,lambda=0,phi=exp_drop2,phi_init=c(28,0.0004),max_iter=30,traj_range=c(-ranges[range],ranges[range]))
   
-  simRes <- new("TCsimRes", params = c(tmp[[2]][[1]],tmp[[2]][[2]]), shifts = data.frame(real_shift=sim@shifts,est_shift=tmp[[3]]), clusters = data.frame(real_clusters=sim@clusters,est_clusters=tmp[[1]]),loss = discrimK2(data = sim@mat_data,tps = sim@mat_tps,result = tmp,traj_range=c(-ranges[range],ranges[range])))
+  simRes <- new("TCsimRes", params = c(tmp[[2]][[1]],tmp[[2]][[2]]), shifts = data.frame(real_shift=sim@shifts,est_shift=tmp[[3]]), clusters = data.frame(real_clusters=sim@clusters,est_clusters=tmp[[1]]),loss = discrimK2(data = sim@mat_data,tps = sim@mat_tps,result = tmp,traj_range=c(-ranges[range],ranges[range])),sim_data = sim@mat_data,sim_tps=sim@mat_tps)
 
 
 

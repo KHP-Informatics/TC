@@ -6,6 +6,6 @@
 #$ -cwd
 #$ -l h_vmem=2G
 #$ -V
-#$ -t 31-50
+#$ -t 1-100
 
 Rscript simulate_new_aac.R 5
