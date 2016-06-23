@@ -1,22 +1,18 @@
-mmseTS <- vector("list",4)
+mmseTS <- vector("list",5)
 
 camdTS <- mmse_both_cpath
 
 mmseTS[[1]] <- mmse_aac
 mmseTS[[2]] <- mmseADNIts
 mmseTS[[3]] <- mmseAIBLts
-mmseTS[[4]] <- mmse_both_cpath
+mmseTS[[4]] <- mmse1013ts
+mmseTS[[5]] <- mmse1014ts
 
-
-mmse_demog <- data.frame(combined=NA,adni=NA,aibl=NA,camd=NA)
+mmse_demog <- data.frame(combined=NA,adni=NA,aibl=NA,c1013=NA,c1014=NA)
 
 rownames(mmse_demog) <- "Num ind any data"
 
-mmse_demog["Num ind any data",2:4] <- c(1229,861,5358)
-
-mmse_demog["Num ind any data","combined"] <- sum(mmse_demog["Num ind any data",2:4],na.rm=T)
-
-for (i in 1:4){
+for (i in 1:5){
   
   mmse_demog["Num ind > 1 TP",i] <- mmseTS[[i]]@numTS
 
@@ -211,50 +207,91 @@ setwd("..")
 
 setwd("camd_june_2015/")
 
-camd_bl_mmse <- array(dim=c(length(mmse_both_cpath@subj_id),1))
-camd_lv_mmse <- array(dim=c(length(mmse_both_cpath@subj_id),1))
+c1013_bl_mmse <- array(dim=c(length(mmse1013ts@subj_id),1))
+c1013_lv_mmse <- array(dim=c(length(mmse1013ts@subj_id),1))
 
-for (i in 1:length(mmse_both_cpath@subj_id)){
+for (i in 1:length(mmse1013ts@subj_id)){
   
-  camd_bl_mmse[i] <- mmse_both_cpath@data[[i]][1]
-  camd_lv_mmse[i] <- mmse_both_cpath@data[[i]][length(mmse_both_cpath@data[[i]])]
+  c1013_bl_mmse[i] <- mmse1013ts@data[[i]][1]
+  c1013_lv_mmse[i] <- mmse1013ts@data[[i]][length(mmse1013ts@data[[i]])]
   
 }
 
-camd_diag <- (camd_bl_mmse<18)+2
-camd_lv_diag <- (camd_lv_mmse<18)+2
+c1013_diag <- (c1013_bl_mmse<18)+2
+c1013_lv_diag <- (c1013_lv_mmse<18)+2
 
-mmse_demog[c("Num MCI","Num AD"),"camd"] <- table(camd_diag)
+mmse_demog[c("Num MCI","Num AD"),"c1013"] <- table(c1013_diag)
 
 
 demog <- read.csv("dm.csv",header=T,as.is=T)
 
-camd_df <- data.frame(age=NA,gender=NA)
+c1013_df <- data.frame(age=NA,gender=NA)
 
-for (i in 1:length(camdTS@subj_id)){
+for (i in 1:length(mmse1013ts@subj_id)){
   
-  ind <- which(demog[,"USUBJID"] == camdTS@subj_id[i])
+  ind <- which(demog[,"USUBJID"] == mmse1013ts@subj_id[i])
   
-  camd_df[i,] <- c(demog[ind[1],"AGE"],as.numeric(demog[ind[1],"SEX"]=="F")+1)
+  c1013_df[i,] <- c(demog[ind[1],"AGE"],as.numeric(demog[ind[1],"SEX"]=="F")+1)
   
 }
 
-mmse_demog[c("Num Male","Num Female"),"camd"] <- table(camd_df[,"gender"])
+mmse_demog[c("Num Male","Num Female"),"c1013"] <- table(c1013_df[,"gender"])
 
-mmse_demog["Median bl age","camd"] <- median(camd_df[,"age"])
+mmse_demog["Median bl age","c1013"] <- median(c1013_df[,"age"])
 
-mmse_demog["LQ bl age","camd"] <- as.numeric(quantile(camd_df[,"age"],0.25))
+mmse_demog["LQ bl age","c1013"] <- as.numeric(quantile(c1013_df[,"age"],0.25))
 
-mmse_demog["UQ bl age","camd"] <- as.numeric(quantile(camd_df[,"age"],0.75))
+mmse_demog["UQ bl age","c1013"] <- as.numeric(quantile(c1013_df[,"age"],0.75))
 
 
-mmse_demog[c("Num CTL","Num MCI","Num AD"),"combined"] <- c(sum(mmse_demog["Num CTL",2:4],na.rm=T),sum(mmse_demog["Num MCI",2:4],na.rm=T),sum(mmse_demog["Num AD",2:4],na.rm=T))
+# CAMD-1014  (Tombaugh and McIntyre (1992) for MMSE cutoffs, except no better than MCI due to recruitment of MCI and AD)
 
-mmse_demog[c("Num Male","Num Female"),"combined"] <- c(sum(mmse_demog["Num Male",2:4],na.rm=T),sum(mmse_demog["Num Female",2:4],na.rm=T))
 
-comb_age <- c(camd_df[,"age"],adni_df[,"age"],aibl_df[,"age"])
+c1014_bl_mmse <- array(dim=c(length(mmse1014ts@subj_id),1))
+c1014_lv_mmse <- array(dim=c(length(mmse1014ts@subj_id),1))
 
-comb_gender <- c(camd_df[,"gender"],adni_df[,"gender"],aibl_df[,"gender"])
+for (i in 1:length(mmse1014ts@subj_id)){
+  
+  c1014_bl_mmse[i] <- mmse1014ts@data[[i]][1]
+  c1014_lv_mmse[i] <- mmse1014ts@data[[i]][length(mmse1014ts@data[[i]])]
+  
+}
+
+c1014_diag <- (c1014_bl_mmse<18)+2
+c1014_lv_diag <- (c1014_lv_mmse<18)+2
+
+mmse_demog[c("Num MCI","Num AD"),"c1014"] <- table(c1014_diag)
+
+
+demog <- read.csv("dm.csv",header=T,as.is=T)
+
+c1014_df <- data.frame(age=NA,gender=NA)
+
+for (i in 1:length(mmse1014ts@subj_id)){
+  
+  ind <- which(demog[,"USUBJID"] == mmse1014ts@subj_id[i])
+  
+  c1014_df[i,] <- c(demog[ind[1],"AGE"],as.numeric(demog[ind[1],"SEX"]=="F")+1)
+  
+}
+
+
+mmse_demog[c("Num Male","Num Female"),"c1014"] <- table(c1014_df[,"gender"])
+
+mmse_demog["Median bl age","c1014"] <- median(c1014_df[,"age"])
+
+mmse_demog["LQ bl age","c1014"] <- as.numeric(quantile(c1014_df[,"age"],0.25))
+
+mmse_demog["UQ bl age","c1014"] <- as.numeric(quantile(c1014_df[,"age"],0.75))
+
+
+mmse_demog[c("Num CTL","Num MCI","Num AD"),"combined"] <- c(sum(mmse_demog["Num CTL",2:5],na.rm=T),sum(mmse_demog["Num MCI",2:5],na.rm=T),sum(mmse_demog["Num AD",2:5],na.rm=T))
+
+mmse_demog[c("Num Male","Num Female"),"combined"] <- c(sum(mmse_demog["Num Male",2:5],na.rm=T),sum(mmse_demog["Num Female",2:5],na.rm=T))
+
+comb_age <- c(adni_df[,"age"],aibl_df[,"age"],c1013_df[,"age"],c1014_df[,"age"])
+
+comb_gender <- c(adni_df[,"gender"],aibl_df[,"gender"],c1013_df[,"gender"],c1014_df[,"gender"])
 
 mmse_demog["Median bl age","combined"] <- median(comb_age)
 
